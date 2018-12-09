@@ -1,6 +1,6 @@
 # secure-exec
 
-Wraps an application and opulates secrets from AWS KMS and SSM
+Wraps an application (similar to the normal `exec`) and populates secrets using AWS KMS
 
 ## Example:
 
