@@ -48,3 +48,17 @@ docker run \
 
 `KMS_PARAM` and `SSM_PARAM` will be decrypted/populated and passed to `myapp` environment.
 `docker inspect` will still see the old values
+
+## Build
+
+`make` will build a linux binary will all providers enabled.
+
+To chose providers (for example, only SSM), run
+```
+make clean deps
+GOOS=linux GOARCH=amd64 go build -i -tags 'awsssm' -o secure-exec
+```
+
+## Adding a new provider
+
+See example PR: https://github.com/s12v/secure-exec/pull/1
