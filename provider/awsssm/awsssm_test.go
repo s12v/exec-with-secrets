@@ -38,7 +38,11 @@ func TestSsmProvider_Decode(t *testing.T) {
 
 func TestSsmProvider_DecodeInvalidInput(t *testing.T) {
 	ssmProvider := SsmProvider{}
-	if r, err := ssmProvider.Decode("{aws-ssm}"); err == nil {
+	r, err := ssmProvider.Decode("{aws-ssm}")
+	if err == nil {
 		t.Fatal("expected an error", r)
+	}
+	if r != "" {
+		t.Fatalf("unexpected result: '%v'", r)
 	}
 }
