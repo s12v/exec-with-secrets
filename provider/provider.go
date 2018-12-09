@@ -25,7 +25,7 @@ func Populate(env []string) []string {
 				if decoded, err := p.Decode(pair[1]); err == nil {
 					pair[1] = decoded
 				} else {
-					fmt.Printf("Error decoding variable '%v': %v\n", pair[0], err)
+					panic(fmt.Sprintf("Error decoding variable '%v': %v\n", pair[0], err))
 				}
 				break
 			}

@@ -50,6 +50,12 @@ func TestPopulate(t *testing.T) {
 }
 
 func TestPopulate_Error(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Expected a panic")
+		}
+	}()
+
 	registry = make([]Provider, 0)
 	env := []string{
 		"PLAINTEXT=this is a test",
@@ -58,8 +64,4 @@ func TestPopulate_Error(t *testing.T) {
 
 	registry = []Provider{&DummyProvider{"bar", true}}
 	env = Populate(env)
-
-	if env[1] != "SECRET={dummy}ddd" {
-		t.Fatalf("unexpected env[1]: %v", env[1])
-	}
 }
