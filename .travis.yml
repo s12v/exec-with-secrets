@@ -1,0 +1,13 @@
+language: go
+
+go:
+- '1.11'
+
+install:
+- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+
+script:
+- make
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
