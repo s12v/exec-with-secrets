@@ -8,10 +8,10 @@ clean:
 	rm ./secure-exec || true
 
 test:
-	go test -v -tags awskms ./... -coverprofile=coverage.txt -covermode=atomic
+	go test -v -tags "awskms awsssm" ./... -coverprofile=coverage.txt -covermode=atomic
 
 build:
-	GOOS=linux GOARCH=amd64 go build -i -tags awskms -o secure-exec
+	GOOS=linux GOARCH=amd64 go build -i -tags 'awskms awsssm' -o secure-exec
 
 docker:
 	docker build -t secure-exec-example .

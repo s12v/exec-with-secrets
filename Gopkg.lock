@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:3e74efd4e7284a53477ce4bd34eb7453fe6d8719050cc6e9f62aff5d50b7aee7"
+  digest = "1:be208c551e1739aa79df6f81cf3fd8855e4ab8ef8a8b98037005852b3d2d4543"
   name = "github.com/aws/aws-sdk-go-v2"
   packages = [
     "aws",
@@ -26,6 +26,7 @@
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/kms",
+    "service/ssm",
     "service/sts",
   ]
   pruneopts = "UT"
@@ -45,6 +46,7 @@
   input-imports = [
     "github.com/aws/aws-sdk-go-v2/aws/external",
     "github.com/aws/aws-sdk-go-v2/service/kms",
+    "github.com/aws/aws-sdk-go-v2/service/ssm",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
