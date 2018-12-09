@@ -30,7 +30,7 @@ Build an image:
 ```
 FROM amazonlinux:2
 
-ADD https://github.com/secure-exec/ /secure-exec
+ADD https://github.com/s12v/secure-exec/releases/download/v0.1.0/secure-exec-darwin-amd64 /secure-exec
 
 COPY app.jar /app.jar
 
