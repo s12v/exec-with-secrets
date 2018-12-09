@@ -35,3 +35,10 @@ func TestSsmProvider_Decode(t *testing.T) {
 		t.Fatalf("unexpected plaintext %v", r)
 	}
 }
+
+func TestSsmProvider_DecodeInvalidInput(t *testing.T) {
+	ssmProvider := SsmProvider{}
+	if r, err := ssmProvider.Decode("{aws-ssm}"); err == nil {
+		t.Fatal("expected an error", r)
+	}
+}

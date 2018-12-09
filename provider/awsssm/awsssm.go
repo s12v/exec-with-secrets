@@ -45,9 +45,8 @@ func (p *SsmProvider) Decode(val string) (string, error) {
 	name := val[len(prefix):]
 	var withEncryption = true
 	input := &ssm.GetParameterInput{Name: &name, WithDecryption: &withEncryption}
-	fmt.Printf("name: %v\n", name)
 	if err := input.Validate(); err != nil {
-		return val, nil
+		return val, err
 	}
 
 	if output, err := fetch(p.awsSSmClient, input); err != nil {
