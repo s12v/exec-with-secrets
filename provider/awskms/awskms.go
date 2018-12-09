@@ -45,16 +45,16 @@ func (p *KmsProvider) Match(val string) bool {
 func (p *KmsProvider) Decode(val string) (string, error) {
 	blob, err := base64.StdEncoding.DecodeString(val[len(prefix):])
 	if err != nil {
-		return val, err
+		return "", err
 	}
 
 	input := &kms.DecryptInput{CiphertextBlob: blob}
 	if err = input.Validate(); err != nil {
-		return val, nil
+		return "", err
 	}
 
 	if output, err := decrypt(p.awsKmsClient, input); err != nil {
-		return val, err
+		return "", err
 	} else {
 		return string(output.Plaintext), nil
 	}

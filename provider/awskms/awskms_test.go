@@ -32,3 +32,10 @@ func TestKmsProvider_Decode(t *testing.T) {
 		t.Fatalf("unexpected plaintext %v", r)
 	}
 }
+
+func TestKmsProvider_DecodeInvalid(t *testing.T) {
+	kmsProvider := KmsProvider{}
+	if _, err := kmsProvider.Decode("{aws-kms}"); err == nil {
+		t.Fatal("expected an error")
+	}
+}
