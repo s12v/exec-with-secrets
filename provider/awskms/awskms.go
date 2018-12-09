@@ -12,15 +12,13 @@ import (
 	"strings"
 )
 
+type KmsProvider struct {
+	awsKmsClient *kms.KMS
+}
+
 const prefix = "{aws-kms}"
 
-type KmsProvider struct {
-	kmsClient awsKms
-}
-
-type awsKms interface {
-	DecryptRequest(input *kms.DecryptInput) kms.DecryptRequest
-}
+var decrypt func (awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error)
 
 func init() {
 	cfg, err := external.LoadDefaultAWSConfig()
@@ -28,7 +26,16 @@ func init() {
 		panic("unable to load AWS-SDK config, " + err.Error())
 	}
 
+	decrypt = awsDecrypt
 	provider.Register(&KmsProvider{kms.New(cfg)})
+}
+
+func awsDecrypt (awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
+	if resp, err := awsKmsClient.DecryptRequest(input).Send(); err != nil {
+		return nil, errors.New(fmt.Sprintf("KMS error: %v", err))
+	} else {
+		return resp, nil
+	}
 }
 
 func (p *KmsProvider) Match(val string) bool {
@@ -46,11 +53,9 @@ func (p *KmsProvider) Decode(val string) (string, error) {
 		return val, nil
 	}
 
-	req := p.kmsClient.DecryptRequest(input)
-	resp, err := req.Send()
-	if err != nil {
-		return val, errors.New(fmt.Sprintf("KMS error: %v", err))
+	if output, err := decrypt(p.awsKmsClient, input); err != nil {
+		return val, err
+	} else {
+		return string(output.Plaintext), nil
 	}
-
-	return string(resp.Plaintext), nil
 }

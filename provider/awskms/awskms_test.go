@@ -3,17 +3,32 @@
 package awskms
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"testing"
 )
 
-func TestKms_Match(t *testing.T) {
-	kms := KmsProvider{}
+func init() {
+	decrypt = func(awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
+		return &kms.DecryptOutput{Plaintext: input.CiphertextBlob}, nil
+	}
+}
 
-	if kms.Match("{aws-kms}something") != true {
+func TestKmsProvider_Match(t *testing.T) {
+	kmsProvider := KmsProvider{}
+
+	if kmsProvider.Match("{aws-kms}something") != true {
 		t.Fatal("expected to match")
 	}
 
-	if kms.Match("https://example.com") != false {
+	if kmsProvider.Match("https://example.com") != false {
 		t.Fatal("not expected to match")
+	}
+}
+
+func TestKmsProvider_Decode(t *testing.T) {
+	kmsProvider := KmsProvider{}
+
+	if r, _ := kmsProvider.Decode("{aws-kms}Ym9vbQ=="); r != "boom" {
+		t.Fatalf("unexpected plaintext %v", r)
 	}
 }

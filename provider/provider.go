@@ -1,31 +1,31 @@
 package provider
 
 import (
-	"log"
+	"fmt"
 	"strings"
 )
 
-var providers = make([]Provider, 0)
-
 type Provider interface {
 	Match(val string) bool
-	Decode(va string) (string, error)
+	Decode(val string) (string, error)
 }
 
-func Register(provider Provider) {
-	providers = append(providers, provider)
+var registry []Provider
+
+func init() {
+	registry = make([]Provider, 0)
 }
 
 func Populate(env []string) []string {
 	newEnv := make([]string, 0)
 	for _, e := range env {
 		pair := strings.SplitN(e, "=", 2)
-		for _, p := range providers {
+		for _, p := range registry {
 			if p.Match(pair[1]) {
 				if decoded, err := p.Decode(pair[1]); err == nil {
 					pair[1] = decoded
 				} else {
-					log.Printf("Error decoding variable '%v': %v", pair[0], err)
+					fmt.Printf("Error decoding variable '%v': %v\n", pair[0], err)
 				}
 				break
 			}
@@ -35,4 +35,8 @@ func Populate(env []string) []string {
 	}
 
 	return newEnv
+}
+
+func Register(provider Provider) {
+	registry = append(registry, provider)
 }
