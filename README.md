@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/s12v/secure-exec.svg?branch=master)](https://travis-ci.com/s12v/secure-exec)
+[![codecov](https://codecov.io/gh/s12v/secure-exec/branch/master/graph/badge.svg)](https://codecov.io/gh/s12v/secure-exec)
+
 # secure-exec
 
 Populates secrets using AWS KMS or SSM into your app
