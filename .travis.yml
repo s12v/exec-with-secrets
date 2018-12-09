@@ -13,7 +13,7 @@ after_success:
 - bash <(curl -s https://codecov.io/bash)
 
 before_deploy:
-  - ls secure-exec-* | xargs -I '{}' bash -c "sha2 -256 -q {} > {}.sha256"
+  - ls secure-exec-* | xargs -I '{}' bash -c "sha256sum -b {} | cut -d ' ' -f1 > {}.sha256"
 
 deploy:
   provider: releases
