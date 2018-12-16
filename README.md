@@ -7,7 +7,9 @@
 
 It looks for prefixed variables in environment and replaces them:
  - `{aws-kms}encrypted-text` - decrypts the value using AWS KMS
- - `{aws-ssm}parameter-name` - loads parameters from AWS Systems Manager Parameter Store
+ - `{aws-ssm}parameter-name` - loads the parameter from AWS Systems Manager Parameter Store
+ - `{aws-sm}parameter-name` - loads the parameter from AWS Secrets Manager 
+ - `{aws-sm}parameter-name{prop1}` - loads the parameter from AWS Secrets Manager and takes property `prop1` 
  
 Then it runs `exec` system call and replaces itself with your app.
  
