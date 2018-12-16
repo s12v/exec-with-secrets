@@ -6,10 +6,10 @@
 `secure-exec` populates secrets using AWS KMS or SSM into your app.
 
 It looks for prefixed variables in environment and replaces them:
- - `{aws-kms}encrypted-text` - decrypts the value using AWS KMS
- - `{aws-ssm}parameter-name` - loads the parameter from AWS Systems Manager Parameter Store
- - `{aws-sm}parameter-name` - loads the parameter from AWS Secrets Manager
- - `{aws-sm}parameter-name{prop1}` - loads the parameter from AWS Secrets Manager and takes `prop1` property
+ - `{aws-kms}AQICAHjA3mwbmf...` - decrypts the value using AWS KMS
+ - `{aws-ssm}/app/staging/param` - loads parameter `/app/staging/param` from AWS Systems Manager Parameter Store
+ - `{aws-sm}/app/staging/param` - loads secret `/app/staging/param` from AWS Secrets Manager
+ - `{aws-sm}/app/staging/param{prop1}` - loads secret `/app/staging/param` from AWS Secrets Manager and takes `prop1` property
  
 Then it runs `exec` system call and replaces itself with your app.
  
