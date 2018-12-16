@@ -1,6 +1,6 @@
 // +build awsssm
 
-package awskms
+package awsssm
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
@@ -8,13 +8,13 @@ import (
 )
 
 func TestSsmProvider_Match(t *testing.T) {
-	kmsProvider := SsmProvider{}
+	ssmProvider := SsmProvider{}
 
-	if kmsProvider.Match("{aws-ssm}something") != true {
+	if ssmProvider.Match("{aws-ssm}something") != true {
 		t.Fatal("expected to match")
 	}
 
-	if kmsProvider.Match("https://example.com") != false {
+	if ssmProvider.Match("https://example.com") != false {
 		t.Fatal("not expected to match")
 	}
 }

@@ -1,6 +1,6 @@
 // +build !awsssm
 
-package awskms
+package awsssm
 
 func init() {
 }
