@@ -53,9 +53,9 @@ docker run \
 
 ## Build
 
-`make` will build a linux binary will all providers enabled.
+`make` will build Linux and Mac binaries with all providers.
 
-To chose providers (for example, only SSM), run
+To chose providers (for example only AWS SSM), run:
 ```
 make clean deps
 GOOS=linux GOARCH=amd64 go build -i -tags 'awsssm' -o secure-exec
