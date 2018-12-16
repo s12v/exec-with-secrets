@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/s12v/secure-exec/provider"
 	_ "github.com/s12v/secure-exec/provider/awskms"
+	_ "github.com/s12v/secure-exec/provider/awssecretsmanager"
+	_ "github.com/s12v/secure-exec/provider/awssecretsmanager"
 	_ "github.com/s12v/secure-exec/provider/awsssm"
 	"os"
 	"syscall"

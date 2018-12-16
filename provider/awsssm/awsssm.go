@@ -1,6 +1,6 @@
 // +build awsssm
 
-package awskms
+package awsssm
 
 import (
 	"errors"
@@ -12,7 +12,7 @@ import (
 )
 
 type SsmProvider struct {
-	awsSSmClient *ssm.SSM
+	awsSsmClient *ssm.SSM
 }
 
 const prefix = "{aws-ssm}"
@@ -49,7 +49,7 @@ func (p *SsmProvider) Decode(val string) (string, error) {
 		return "", err
 	}
 
-	if output, err := fetch(p.awsSSmClient, input); err != nil {
+	if output, err := fetch(p.awsSsmClient, input); err != nil {
 		return "", err
 	} else {
 		return *output.Parameter.Value, nil
