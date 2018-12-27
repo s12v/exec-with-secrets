@@ -57,8 +57,7 @@ docker run \
 
 To chose providers (for example only AWS SSM), run:
 ```
-make clean deps
-GOOS=linux GOARCH=amd64 go build -i -tags 'awsssm' -o secure-exec
+make TAGS=awsssm
 ```
 
 ## Adding a new provider
