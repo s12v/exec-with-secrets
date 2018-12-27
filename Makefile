@@ -1,5 +1,5 @@
 .PHONY: all
-all: clean build test
+all: clean test build
 TAGS = awskms awssecretsmanager awsssm
 
 clean:
