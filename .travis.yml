@@ -3,8 +3,8 @@ language: go
 go:
 - '1.11'
 
-install:
-- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+env:
+- GO111MODULE=on
 
 script:
 - make
