@@ -1,5 +1,4 @@
+bin
 coverage.txt
 main
-secure-exec
-secure-exec-*
 vendor
