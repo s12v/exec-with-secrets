@@ -3,15 +3,17 @@
 
 # secure-exec
 
-`secure-exec` populates secrets using AWS KMS, SSM, or Secrets Manager into your app environment.
+`secure-exec` populates secrets from AWS KMS, SSM, or Secrets Manager into your app environment.
 
-It looks for prefixed variables in environment and replaces them:
+It looks for prefixed variables in environment and replaces them with secret value:
  - `{aws-kms}AQICAHjA3mwbmf...` - decrypts the value using AWS KMS
  - `{aws-ssm}/app/staging/param` - loads parameter `/app/staging/param` from AWS Systems Manager Parameter Store
  - `{aws-sm}/app/staging/param` - loads secret `/app/staging/param` from AWS Secrets Manager
  - `{aws-sm}/app/staging/param{prop1}` - loads secret `/app/staging/param` from AWS Secrets Manager and takes `prop1` property
  
 Then it runs `exec` system call and replaces itself with your app.
+The secrets are only available to your application and not accessible with `docker inspect`.
+
 The default credentials chain is used for AWS access.
 
 ## Examples
