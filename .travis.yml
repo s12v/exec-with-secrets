@@ -13,14 +13,14 @@ after_success:
 - bash <(curl -s https://codecov.io/bash)
 
 before_deploy:
-  - ls secure-exec-* | xargs -I '{}' bash -c "sha256sum -b {} | cut -d ' ' -f1 > {}.sha256"
+- ls bin/secure-exec-* | xargs -I '{}' bash -c "sha256sum -b {} | cut -d ' ' -f1 > {}.sha256"
 
 deploy:
   provider: releases
   api_key:
     secure: r0g/KpsGvbG1Dpzpx3f2A15GWQLxoQ7O/cjUv0sBC67w0AsMO8Mj9xjAn8jWfVPmD7nQlBPlMsPY3GSfJkz9mXn1Lxet/khqHSkKA/XDZejN91npisFFBwzu4c38JOr3bBk3R25X69AVVbhvHtozVqww88IYqfw3A57MKbOKutolhZmkCux7zJYrVQDvSkorVzKGXckYh9Xg7KW9C5XgU5LhnpDicV/yc26kWDimQ6ND9BGo4dnEpTK3xFcD5MgnuC9cXTJ9xmZDvhiLBLJ+xbs5cEGIXrD63svQD/KzUa62yAId60+mBM+A/N5frp1uPrVtZRjgk7b0kwjiNVlKVkC2ooug+VzgXmjkFkZ7CPgzPVKrDtMAwVnP3axqn3FHJYYn81cOSZNxy7KV80JrB+tNKHJKGNE4R1iM51TV07yUzoRVjY1t/FOquvBNMO1NktQCGSOJv28r/H3diT9lLCap5Mg2DsA0kZvEtcfUO0dQKQ9oFWq7bhS8z5r32KHk1fWVk/oD68tfvZDkhw+eKrgqzduqKALWVDq/LAS9z32iF5EvcJHRjXYF2pOPMN0jJEm0toqJQO9BO0cTT3xoApMvCT5eOxUOoryBzNyHjVPem47bYYx4ohuZ95qgpUT6nTGsIf1nZEOPuZ5xw9SxB5pPo/9Q1btGS77wUX2Z7JM=
   file_glob: true
-  file: "secure-exec-*"
+  file: "bin/secure-exec-*"
   skip_cleanup: true
   on:
     tags: true
