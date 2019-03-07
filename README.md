@@ -3,9 +3,14 @@
 
 # secure-exec
 
-`secure-exec` populates secrets from AWS KMS, SSM, or Secrets Manager into your app environment.
+`secure-exec` passes secrets from AWS KMS, SSM, or Secrets Manager into your app environment in a secure way.
 
-It looks for prefixed variables in environment and replaces them with secret value:
+It supports the following services as secrets providers:
+ - [AWS Key Management (KMS)](https://aws.amazon.com/kms/)
+ - [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html)
+ - [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)
+
+This small utility looks for prefixed variables in environment and replaces them with the secret value:
  - `{aws-kms}AQICAHjA3mwbmf...` - decrypts the value using AWS KMS
  - `{aws-ssm}/app/staging/param` - loads parameter `/app/staging/param` from AWS Systems Manager Parameter Store
  - `{aws-sm}/app/staging/param` - loads secret `/app/staging/param` from AWS Secrets Manager
@@ -49,12 +54,12 @@ docker run \
     myapp 
 ```
 
-`KMS_PARAM` and `SSM_PARAM` will be decrypted/populated and passed to `myapp` environment.
-`docker inspect` will still see the old values
+`KMS_PARAM` and `SSM_PARAM` will be decrypted and passed to `myapp` environment.
+`docker inspect` will still see the encrypted values
 
 ## Build
 
-`make` will build Linux and Mac binaries with all providers.
+`make` builds Linux and Mac binaries with all providers.
 
 To chose providers (for example only AWS SSM), run:
 ```
