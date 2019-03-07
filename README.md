@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/s12v/secure-exec.svg?branch=master)](https://travis-ci.com/s12v/secure-exec)
 [![codecov](https://codecov.io/gh/s12v/secure-exec/branch/master/graph/badge.svg)](https://codecov.io/gh/s12v/secure-exec)
 
-# secure-exec
+# secure-exec - Populate secrets from AWS KMS, SSM or Secrets Manager into your app environment
 
 `secure-exec` passes secrets from AWS KMS, SSM, or Secrets Manager into your app environment in a secure way.
 
