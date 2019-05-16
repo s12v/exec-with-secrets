@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.com/s12v/secure-exec.svg?branch=master)](https://travis-ci.com/s12v/secure-exec)
-[![codecov](https://codecov.io/gh/s12v/secure-exec/branch/master/graph/badge.svg)](https://codecov.io/gh/s12v/secure-exec)
+[![Build Status](https://travis-ci.com/s12v/exec-with-secrets.svg?branch=master)](https://travis-ci.com/s12v/exec-with-secrets)
+[![codecov](https://codecov.io/gh/s12v/exec-with-secrets/branch/master/graph/badge.svg)](https://codecov.io/gh/s12v/exec-with-secrets)
 
-# secure-exec - Populate secrets from AWS KMS, SSM or Secrets Manager into your app environment
+Populate secrets from AWS KMS, SSM or Secrets Manager into your app environment
 
-`secure-exec` passes secrets from AWS KMS, SSM, or Secrets Manager into your app environment in a secure way.
+`exec-with-secrets` passes secrets from AWS KMS, SSM, or Secrets Manager into your app environment in a secure way.
 
 It supports the following services as secrets providers:
  - [AWS Key Management (KMS)](https://aws.amazon.com/kms/)
@@ -26,7 +26,7 @@ The default credentials chain is used for AWS access.
 ### Wrap an executable
 
 ```
-PARAM="{aws-kms}AQICAHjA3mwvsfng346vnbmf..." secure-exec app
+PARAM="{aws-kms}AQICAHjA3mwvsfng346vnbmf..." exec-with-secrets app
 ```
 
 `PARAM` will be decrypted and passed to `app` via environment.
@@ -38,11 +38,11 @@ Build an image:
 ```
 FROM amazonlinux:2
 
-ADD https://github.com/s12v/secure-exec/releases/download/v0.2.1/secure-exec-linux-amd64 /secure-exec
+ADD https://github.com/s12v/exec-with-secrets/releases/download/v0.2.1/exec-with-secrets-linux-amd64 /exec-with-secrets
 
 COPY app.jar /app.jar
 
-CMD secure-exec java -jar /app.jar
+CMD exec-with-secrets java -jar /app.jar
 ```
 
 Run:
@@ -51,10 +51,10 @@ docker run \
     -e PLAINTEXT_PARAM="text" \
     -e KMS_PARAM="{aws-kms}AQICAHjA3mwvsfng346vnbmf..." \
     -e SSM_PARAM="{aws-ssm}/myapp/param" \
-    myapp 
+    myappimage
 ```
 
-`KMS_PARAM` and `SSM_PARAM` will be decrypted and passed to `myapp` environment.
+`KMS_PARAM` and `SSM_PARAM` will be decrypted and passed to `app.jar` environment.
 `docker inspect` will still see the encrypted values
 
 ## Build
@@ -68,4 +68,4 @@ make TAGS=awsssm
 
 ## Adding a new provider
 
-See example PR: https://github.com/s12v/secure-exec/pull/1
+See example PR: https://github.com/s12v/exec-with-secrets/pull/1
