@@ -9,8 +9,8 @@ test:
 	go test -v -tags "$(TAGS)" ./... -coverprofile=coverage.txt -covermode=atomic
 
 build:
-	GOOS=linux GOARCH=amd64 go build -i -tags '$(TAGS)' -ldflags='-s -w' -o "bin/secure-exec-linux-amd64"
-	GOOS=darwin GOARCH=amd64 go build -i -tags '$(TAGS)' -ldflags='-s -w' -o "bin/secure-exec-darwin-amd64"
+	GOOS=linux GOARCH=amd64 go build -i -tags '$(TAGS)' -ldflags='-s -w' -o "bin/exec-with-secrets-linux-amd64"
+	GOOS=darwin GOARCH=amd64 go build -i -tags '$(TAGS)' -ldflags='-s -w' -o "bin/exec-with-secrets-darwin-amd64"
 
 docker:
-	docker build -t secure-exec-example .
+	docker build -t exec-with-secrets-example .
