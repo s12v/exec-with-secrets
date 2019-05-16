@@ -38,7 +38,7 @@ Build an image:
 ```
 FROM amazonlinux:2
 
-ADD https://github.com/s12v/exec-with-secrets/releases/download/v0.2.1/exec-with-secrets-linux-amd64 /exec-with-secrets
+ADD https://github.com/s12v/exec-with-secrets/releases/download/v0.3.0/exec-with-secrets-linux-amd64 /exec-with-secrets
 
 COPY app.jar /app.jar
 
