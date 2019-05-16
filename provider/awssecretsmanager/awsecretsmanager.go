@@ -3,13 +3,14 @@
 package awssecretsmanager
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
-	"github.com/s12v/secure-exec/provider"
+	"github.com/s12v/exec-with-secrets/provider"
 	"regexp"
 	"strings"
 )
@@ -39,7 +40,8 @@ func init() {
 func awsFetch(
 	awsClient *secretsmanager.SecretsManager,
 	input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
-	if resp, err := awsClient.GetSecretValueRequest(input).Send(); err != nil {
+	ctx := context.Background()
+	if resp, err := awsClient.GetSecretValueRequest(input).Send(ctx); err != nil {
 		return nil, errors.New(fmt.Sprintf("AWS SecretsManager error: %v", err))
 	} else {
 		return resp, nil
@@ -60,7 +62,7 @@ func (p *SecretsManagerProvider) Decode(val string) (string, error) {
 }
 
 func (p *SecretsManagerProvider) decodeJson(val string, property string) (string, error) {
-	name := val[:len(val)-len(property) - 2]
+	name := val[:len(val)-len(property)-2]
 	jsobj, err := p.fetchString(name)
 	if err != nil {
 		return "", err

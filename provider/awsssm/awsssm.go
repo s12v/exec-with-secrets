@@ -3,11 +3,12 @@
 package awsssm
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/s12v/secure-exec/provider"
+	"github.com/s12v/exec-with-secrets/provider"
 	"strings"
 )
 
@@ -17,7 +18,7 @@ type SsmProvider struct {
 
 const prefix = "{aws-ssm}"
 
-var fetch func (awsSsmClient *ssm.SSM, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error)
+var fetch func(awsSsmClient *ssm.SSM, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error)
 
 func init() {
 	cfg, err := external.LoadDefaultAWSConfig()
@@ -30,7 +31,8 @@ func init() {
 }
 
 func awsFetch(awsSsmClient *ssm.SSM, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error) {
-	if resp, err := awsSsmClient.GetParameterRequest(input).Send(); err != nil {
+	ctx := context.Background()
+	if resp, err := awsSsmClient.GetParameterRequest(input).Send(ctx); err != nil {
 		return nil, errors.New(fmt.Sprintf("SSM error: %v", err))
 	} else {
 		return resp, nil

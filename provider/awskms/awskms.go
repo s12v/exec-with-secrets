@@ -3,12 +3,13 @@
 package awskms
 
 import (
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/s12v/secure-exec/provider"
+	"github.com/s12v/exec-with-secrets/provider"
 	"strings"
 )
 
@@ -18,7 +19,7 @@ type KmsProvider struct {
 
 const prefix = "{aws-kms}"
 
-var decrypt func (awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error)
+var decrypt func(awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error)
 
 func init() {
 	cfg, err := external.LoadDefaultAWSConfig()
@@ -30,8 +31,9 @@ func init() {
 	provider.Register(&KmsProvider{kms.New(cfg)})
 }
 
-func awsDecrypt (awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
-	if resp, err := awsKmsClient.DecryptRequest(input).Send(); err != nil {
+func awsDecrypt(awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
+	ctx := context.Background()
+	if resp, err := awsKmsClient.DecryptRequest(input).Send(ctx); err != nil {
 		return nil, errors.New(fmt.Sprintf("KMS error: %v", err))
 	} else {
 		return resp, nil

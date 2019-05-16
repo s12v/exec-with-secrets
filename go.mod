@@ -1,3 +1,3 @@
-module github.com/s12v/secure-exec
+module github.com/s12v/exec-with-secrets
 
-require github.com/aws/aws-sdk-go-v2 v0.7.0
+require github.com/aws/aws-sdk-go-v2 v0.8.0

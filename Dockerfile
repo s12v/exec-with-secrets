@@ -1,5 +1,5 @@
 FROM amazonlinux:2
 
-COPY secure-exec-linux-amd64 /usr/local/bin/secure-exec
+COPY ./bin/exec-with-secrets-linux-amd64 /usr/local/bin/exec-with-secrets
 
-CMD secure-exec
+CMD exec-with-secrets
