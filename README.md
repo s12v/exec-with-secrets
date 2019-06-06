@@ -51,7 +51,7 @@ Run:
 ```
 docker run \
     -e PLAINTEXT_PARAM="text" \
-    -e KMS_PARAM="{aws-kms}AQICAHjA3mwvsfng346vnbmf..." \
+    -e KMS_PARAM="{aws-kms}c2VjcmV0" \
     -e SSM_PARAM="{aws-ssm}/myapp/param" \
     exec-with-secrets-example \
     /bin/env
