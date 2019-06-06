@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	decrypt = func(awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
+	decrypt = func(awsKmsClient *kms.Client, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
 		return &kms.DecryptOutput{Plaintext: input.CiphertextBlob}, nil
 	}
 }

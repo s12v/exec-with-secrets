@@ -25,7 +25,7 @@ func TestSecretsManagerProvider_Decode(t *testing.T) {
 
 	value := "boom"
 	fetch = func(
-		awsClient *secretsmanager.SecretsManager,
+		awsClient *secretsmanager.Client,
 		input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
 		if *input.SecretId != "/foo/bar" {
 			t.Fatalf("unexpected SecretId %v", input.SecretId)
@@ -44,7 +44,7 @@ func TestSecretsManagerProvider_DecodeJson(t *testing.T) {
 
 	value := `{"prop1": "aaa", "prop2": "bbb"}`
 	fetch = func(
-		awsClient *secretsmanager.SecretsManager,
+		awsClient *secretsmanager.Client,
 		input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
 		if *input.SecretId != "/foo/bar" {
 			t.Fatalf("unexpected SecretId %v", *input.SecretId)
@@ -63,7 +63,7 @@ func TestSecretsManagerProvider_DecodeJson_MissingProperty(t *testing.T) {
 
 	value := `{"prop1": "foo", "prop2": "bar"}`
 	fetch = func(
-		awsClient *secretsmanager.SecretsManager,
+		awsClient *secretsmanager.Client,
 		input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
 		if *input.SecretId != "/foo/bar" {
 			t.Fatalf("unexpected SecretId %v", *input.SecretId)
@@ -81,7 +81,7 @@ func TestSecretsManagerProvider_Decode_FetchError(t *testing.T) {
 	provider := SecretsManagerProvider{}
 
 	fetch = func(
-		awsClient *secretsmanager.SecretsManager,
+		awsClient *secretsmanager.Client,
 		input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
 
 		return nil, errors.New("test error")
@@ -96,7 +96,7 @@ func TestSecretsManagerProvider_DecodeJson_FetchError(t *testing.T) {
 	provider := SecretsManagerProvider{}
 
 	fetch = func(
-		awsClient *secretsmanager.SecretsManager,
+		awsClient *secretsmanager.Client,
 		input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
 
 		return nil, errors.New("test error")

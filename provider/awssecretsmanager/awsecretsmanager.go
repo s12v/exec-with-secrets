@@ -16,7 +16,7 @@ import (
 )
 
 type SecretsManagerProvider struct {
-	awsClient *secretsmanager.SecretsManager
+	awsClient *secretsmanager.Client
 }
 
 const prefix = "{aws-sm}"
@@ -24,7 +24,7 @@ const prefix = "{aws-sm}"
 var postfix = regexp.MustCompile("{[^{^}]+}$")
 
 var fetch func(
-	awsClient *secretsmanager.SecretsManager,
+	awsClient *secretsmanager.Client,
 	input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error)
 
 func init() {
@@ -38,13 +38,13 @@ func init() {
 }
 
 func awsFetch(
-	awsClient *secretsmanager.SecretsManager,
+	awsClient *secretsmanager.Client,
 	input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
 	ctx := context.Background()
 	if resp, err := awsClient.GetSecretValueRequest(input).Send(ctx); err != nil {
 		return nil, errors.New(fmt.Sprintf("AWS SecretsManager error: %v", err))
 	} else {
-		return resp, nil
+		return resp.GetSecretValueOutput, nil
 	}
 }
 
