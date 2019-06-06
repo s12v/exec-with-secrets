@@ -6,19 +6,26 @@ import (
 	_ "github.com/s12v/exec-with-secrets/provider/awskms"
 	_ "github.com/s12v/exec-with-secrets/provider/awssecretsmanager"
 	_ "github.com/s12v/exec-with-secrets/provider/awsssm"
+	_ "github.com/s12v/exec-with-secrets/provider/azurekeyvault"
 	"os"
 	"syscall"
 )
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("exec-with-secrets:", r)
+		}
+	}()
+
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: exec-with-secrets program [args]")
 		os.Exit(0)
 	}
 
 	env := provider.Populate(os.Environ())
-	syscall.Exec(os.Args[1], os.Args[1:], env)
+	_ = syscall.Exec(os.Args[1], os.Args[1:], env)
 
-	fmt.Printf("Unable to start %v", os.Args[1])
+	fmt.Println("exec-with-secrets program: Unable to start", os.Args[1])
 	os.Exit(1)
 }

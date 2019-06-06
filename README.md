@@ -1,48 +1,50 @@
 [![Build Status](https://travis-ci.com/s12v/exec-with-secrets.svg?branch=master)](https://travis-ci.com/s12v/exec-with-secrets)
 [![codecov](https://codecov.io/gh/s12v/exec-with-secrets/branch/master/graph/badge.svg)](https://codecov.io/gh/s12v/exec-with-secrets)
 
-Populate secrets from AWS KMS, SSM or Secrets Manager into your app environment
-
-`exec-with-secrets` passes secrets from AWS KMS, SSM, or Secrets Manager into your app environment in a secure way.
+`exec-with-secrets` passes secrets from AWS KMS, SSM, Secrets Managerm or Azure Key Vault into your app environment in a secure way.
 
 It supports the following services as secrets providers:
  - [AWS Key Management (KMS)](https://aws.amazon.com/kms/)
- - [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html)
+ - [AWS Systems Manager Parameter Store (SSM)](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html)
  - [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)
+ - [Azure Key Vault](https://azure.microsoft.com/en-in/services/key-vault/)
 
 This small utility looks for prefixed variables in environment and replaces them with the secret value:
  - `{aws-kms}AQICAHjA3mwbmf...` - decrypts the value using AWS KMS
  - `{aws-ssm}/app/staging/param` - loads parameter `/app/staging/param` from AWS Systems Manager Parameter Store
  - `{aws-sm}/app/staging/param` - loads secret `/app/staging/param` from AWS Secrets Manager
  - `{aws-sm}/app/staging/param{prop1}` - loads secret `/app/staging/param` from AWS Secrets Manager and takes `prop1` property
+ - `{az-kv}vault/name` - loads secret `name` from Azure Key Vault `vault`
  
 Then it runs `exec` system call and replaces itself with your app.
 The secrets are only available to your application and not accessible with `docker inspect`.
 
-The default credentials chain is used for AWS access.
+Access:
+ - The default credentials chain is used for AWS access
+ - Azure authorizer from environment variables/MSI
+ - Azure authorizer from configuration file, if the file is set using `AZURE_AUTH_LOCATION` variable
 
 ## Examples
 
 ### Wrap an executable
 
 ```
-PARAM="{aws-kms}AQICAHjA3mwvsfng346vnbmf..." exec-with-secrets app
+# Download the latest binary
+curl -L https://github.com/s12v/exec-with-secrets/releases/download/v0.3.0/exec-with-secrets-darwin-amd64 -o exec-with-secrets
+chmod +x ./exec-with-secrets
+
+# Wrap /bin/sh
+PARAM="{aws-kms}c2VjcmV0" ./exec-with-secrets /bin/sh -c 'echo $PARAM'
 ```
 
-`PARAM` will be decrypted and passed to `app` via environment.
+`PARAM` will be decrypted and passed to `/bin/sh` via environment.
 
 ### Docker example
 
-Build an image:
+Build an example image:
 
 ```
-FROM amazonlinux:2
-
-ADD https://github.com/s12v/exec-with-secrets/releases/download/v0.3.0/exec-with-secrets-linux-amd64 /exec-with-secrets
-
-COPY app.jar /app.jar
-
-CMD exec-with-secrets java -jar /app.jar
+make docker
 ```
 
 Run:
@@ -51,15 +53,19 @@ docker run \
     -e PLAINTEXT_PARAM="text" \
     -e KMS_PARAM="{aws-kms}AQICAHjA3mwvsfng346vnbmf..." \
     -e SSM_PARAM="{aws-ssm}/myapp/param" \
-    myappimage
+    exec-with-secrets-example \
+    /bin/env
 ```
 
-`KMS_PARAM` and `SSM_PARAM` will be decrypted and passed to `app.jar` environment.
-`docker inspect` will still see the encrypted values
+`KMS_PARAM` and `SSM_PARAM` will be decrypted and passed to `/bin/env` as environment variables.
+See [Dockerfile](Dockerfile) example.
+
 
 ## Build
 
 `make` builds Linux and Mac binaries with all providers.
+
+### Choose providers
 
 To chose providers (for example only AWS SSM), run:
 ```

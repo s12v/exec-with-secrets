@@ -1,6 +1,6 @@
 .PHONY: all
 all: clean test build
-TAGS = awskms awssecretsmanager awsssm
+TAGS = awskms awssecretsmanager awsssm azurekeyvault
 
 clean:
 	rm -rf ./bin || true
@@ -13,4 +13,4 @@ build:
 	GOOS=darwin GOARCH=amd64 go build -i -tags '$(TAGS)' -ldflags='-s -w' -o "bin/exec-with-secrets-darwin-amd64"
 
 docker:
-	docker build -t exec-with-secrets-example .
+	docker build --no-cache -t exec-with-secrets-example .
