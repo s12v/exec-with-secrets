@@ -30,7 +30,7 @@ Access:
 
 ```
 # Download the latest binary
-curl -L https://github.com/s12v/exec-with-secrets/releases/download/v0.3.0/exec-with-secrets-darwin-amd64 -o exec-with-secrets
+curl -L https://github.com/s12v/exec-with-secrets/releases/download/v0.4.0/exec-with-secrets-darwin-amd64 -o exec-with-secrets
 chmod +x ./exec-with-secrets
 
 # Wrap /bin/sh
