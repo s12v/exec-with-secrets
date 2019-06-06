@@ -41,7 +41,7 @@ PARAM="{aws-kms}c2VjcmV0" ./exec-with-secrets /bin/sh -c 'echo $PARAM'
 
 ### Docker example
 
-Build an example image:
+Build the [example Docker image](Dockerfile):
 
 ```
 make docker
@@ -58,7 +58,6 @@ docker run \
 ```
 
 `KMS_PARAM` and `SSM_PARAM` will be decrypted and passed to `/bin/env` as environment variables.
-See [Dockerfile](Dockerfile) example.
 
 
 ## Build
