@@ -17,7 +17,7 @@ This small utility looks for prefixed variables in environment and replaces them
  - `{az-kv}vault/name` - loads secret `name` from Azure Key Vault `vault`
  
 Then it runs `exec` system call and replaces itself with your app.
-The secrets are only available to your application and not accessible with `docker inspect`.
+**The secrets are only available to your application and not accessible with `docker inspect`**
 
 Access:
  - The default credentials chain is used for AWS access
