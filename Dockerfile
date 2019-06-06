@@ -1,5 +1,9 @@
 FROM amazonlinux:2
 
-COPY ./bin/exec-with-secrets-linux-amd64 /usr/local/bin/exec-with-secrets
+ADD https://github.com/s12v/exec-with-secrets/releases/download/v0.3.0/exec-with-secrets-linux-amd64 /exec-with-secrets
 
-CMD exec-with-secrets
+RUN chmod +x /exec-with-secrets
+
+ENTRYPOINT ["/exec-with-secrets"]
+
+CMD env
