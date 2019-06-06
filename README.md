@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.com/s12v/exec-with-secrets.svg?branch=master)](https://travis-ci.com/s12v/exec-with-secrets)
 [![codecov](https://codecov.io/gh/s12v/exec-with-secrets/branch/master/graph/badge.svg)](https://codecov.io/gh/s12v/exec-with-secrets)
 
-`exec-with-secrets` passes secrets from AWS KMS, SSM, Secrets Managerm or Azure Key Vault into your app environment in a secure way.
+# Pass secrets from AWS KMS/SSM/Secrets Manager or Azure Key Vault into your app environment
 
-It supports the following services as secrets providers:
+`exec-with-secrets` it supports the following services as secrets providers:
  - [AWS Key Management (KMS)](https://aws.amazon.com/kms/)
  - [AWS Systems Manager Parameter Store (SSM)](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html)
  - [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)
