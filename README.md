@@ -16,8 +16,12 @@ This small utility looks for prefixed variables in environment and replaces them
  - `{aws-sm}/app/staging/param{prop1}` - loads secret `/app/staging/param` from AWS Secrets Manager and takes `prop1` property
  - `{az-kv}vault/name` - loads secret `name` from Azure Key Vault `vault`
  
-Then it runs `exec` system call and replaces itself with your app.
-**The secrets are only available to your application and not accessible with `docker inspect`**
+Then it runs `exec` system call. **The secrets are only available to your application and not accessible with `docker inspect`**
+
+Basic example:
+```
+SECRET="{aws-ssm}/my/secret" exec-with-secrets myapp # $SECRET is plaintext in myapp environment
+```
 
 Access:
  - The default credentials chain is used for AWS access
@@ -26,7 +30,7 @@ Access:
 
 ## Examples
 
-### Wrap an executable
+### Wrap executable
 
 ```
 # Download the latest binary
