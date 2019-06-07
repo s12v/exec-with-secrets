@@ -13,12 +13,12 @@ import (
 )
 
 type SsmProvider struct {
-	awsSsmClient *ssm.SSM
+	awsSsmClient *ssm.Client
 }
 
 const prefix = "{aws-ssm}"
 
-var fetch func(awsSsmClient *ssm.SSM, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error)
+var fetch func(awsSsmClient *ssm.Client, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error)
 
 func init() {
 	cfg, err := external.LoadDefaultAWSConfig()
@@ -30,12 +30,12 @@ func init() {
 	provider.Register(&SsmProvider{ssm.New(cfg)})
 }
 
-func awsFetch(awsSsmClient *ssm.SSM, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error) {
+func awsFetch(awsSsmClient *ssm.Client, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error) {
 	ctx := context.Background()
 	if resp, err := awsSsmClient.GetParameterRequest(input).Send(ctx); err != nil {
 		return nil, errors.New(fmt.Sprintf("SSM error: %v", err))
 	} else {
-		return resp, nil
+		return resp.GetParameterOutput, nil
 	}
 }
 

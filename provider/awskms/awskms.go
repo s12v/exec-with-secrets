@@ -14,12 +14,12 @@ import (
 )
 
 type KmsProvider struct {
-	awsKmsClient *kms.KMS
+	awsKmsClient *kms.Client
 }
 
 const prefix = "{aws-kms}"
 
-var decrypt func(awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error)
+var decrypt func(awsKmsClient *kms.Client, input *kms.DecryptInput) (*kms.DecryptOutput, error)
 
 func init() {
 	cfg, err := external.LoadDefaultAWSConfig()
@@ -31,12 +31,12 @@ func init() {
 	provider.Register(&KmsProvider{kms.New(cfg)})
 }
 
-func awsDecrypt(awsKmsClient *kms.KMS, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
+func awsDecrypt(awsKmsClient *kms.Client, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
 	ctx := context.Background()
 	if resp, err := awsKmsClient.DecryptRequest(input).Send(ctx); err != nil {
 		return nil, errors.New(fmt.Sprintf("KMS error: %v", err))
 	} else {
-		return resp, nil
+		return resp.DecryptOutput, nil
 	}
 }
 

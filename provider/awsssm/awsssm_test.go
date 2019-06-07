@@ -23,7 +23,7 @@ func TestSsmProvider_Decode(t *testing.T) {
 	ssmProvider := SsmProvider{}
 
 	value := "boom"
-	fetch = func(awsSsmClient *ssm.SSM, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error) {
+	fetch = func(awsSsmClient *ssm.Client, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error) {
 		if *input.Name != "/foo/bar" {
 			t.Fatalf("unexpected name %v", input.Name)
 		}
