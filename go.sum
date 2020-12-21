@@ -7,8 +7,8 @@ github.com/Azure/azure-sdk-for-go v30.1.0+incompatible/go.mod h1:9XXNKU+eRnpl9mo
 github.com/Azure/go-autorest v14.2.0+incompatible h1:V5VMDjClD3GiElqLWO7mz2MxNAK/vTfRHdAubSIPRgs=
 github.com/Azure/go-autorest v14.2.0+incompatible/go.mod h1:r+4oMnoxhatjLLJ6zxSWATqVooLgysK6ZNox3g/xq24=
 github.com/Azure/go-autorest/autorest v0.1.0/go.mod h1:AKyIcETwSUFxIcs/Wnq/C+kwCtlEYGUVd7FPNb2slmg=
-github.com/Azure/go-autorest/autorest v0.11.13 h1:XKx/sB3bfadpXBBHPc7tP2XPKhzVyrdhxpDC3T0wqjs=
-github.com/Azure/go-autorest/autorest v0.11.13/go.mod h1:eipySxLmqSyC5s5k1CLupqet0PSENBEDP93LQ9a8QYw=
+github.com/Azure/go-autorest/autorest v0.11.15 h1:S5SDFpmgoVyvMEOcULyEDlYFrdPmu6Wl0Ic+shkEwzg=
+github.com/Azure/go-autorest/autorest v0.11.15/go.mod h1:eipySxLmqSyC5s5k1CLupqet0PSENBEDP93LQ9a8QYw=
 github.com/Azure/go-autorest/autorest/adal v0.1.0 h1:RSw/7EAullliqwkZvgIGDYZWQm1PGKXI8c4aY/87yuU=
 github.com/Azure/go-autorest/autorest/adal v0.1.0/go.mod h1:MeS4XhScH55IST095THyTxElntu7WqB7pNbZo8Q5G3E=
 github.com/Azure/go-autorest/autorest/adal v0.9.5 h1:Y3bBUV4rTuxenJJs41HU3qmqsb+auo+a3Lz+PlJPpL0=
