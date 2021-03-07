@@ -13,7 +13,7 @@ This utility looks for prefixed variables in environment and replaces them with 
  - `{aws-kms}AQICAHjA3mwbmf...` - decrypts the value using AWS KMS
  - `{aws-ssm}/app/param` - loads parameter `/app/param` from AWS Systems Manager Parameter Store
  - `{aws-sm}/app/param` - loads secret `/app/param` from AWS Secrets Manager
- - `{aws-sm}/app/param{prop1}` - loads secret `/app/param` from AWS Secrets Manager and takes `prop1` property
+ - `{aws-sm}/app/param[prop1]` - loads secret `/app/param` from AWS Secrets Manager and takes `prop1` property
  - `{az-kv}vault/name` - loads secret `name` from Azure Key Vault `vault`
  
 After decrypting secrets it runs [`exec`](https://en.wikipedia.org/wiki/Exec_(system_call)) system call, replacing itself with your app.

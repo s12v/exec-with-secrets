@@ -53,7 +53,7 @@ func TestSecretsManagerProvider_DecodeJson(t *testing.T) {
 		return &secretsmanager.GetSecretValueOutput{SecretString: &value}, nil
 	}
 
-	if r, _ := provider.Decode("{aws-sm}/foo/bar{prop2}"); r != "bbb" {
+	if r, _ := provider.Decode("{aws-sm}/foo/bar[prop2]"); r != "bbb" {
 		t.Fatalf("unexpected value %v", r)
 	}
 }
@@ -72,7 +72,7 @@ func TestSecretsManagerProvider_DecodeJson_MissingProperty(t *testing.T) {
 		return &secretsmanager.GetSecretValueOutput{SecretString: &value}, nil
 	}
 
-	if _, err := provider.Decode("{aws-sm}/foo/bar{prop3}"); err == nil {
+	if _, err := provider.Decode("{aws-sm}/foo/bar[prop3]"); err == nil {
 		t.Fatal("expected an error")
 	}
 }
@@ -102,7 +102,7 @@ func TestSecretsManagerProvider_DecodeJson_FetchError(t *testing.T) {
 		return nil, errors.New("test error")
 	}
 
-	if _, err := provider.Decode("{aws-sm}/foo/bar{prop1}"); err == nil {
+	if _, err := provider.Decode("{aws-sm}/foo/bar[prop1]"); err == nil {
 		t.Fatal("expected an error")
 	}
 }
