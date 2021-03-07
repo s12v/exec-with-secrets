@@ -21,7 +21,7 @@ type SecretsManagerProvider struct {
 
 const prefix = "{aws-sm}"
 
-var postfix = regexp.MustCompile("{[^{^}]+}$")
+var postfix = regexp.MustCompile(`\[[^]]+\]$`)
 
 var fetch func(
 	awsClient *secretsmanager.Client,
@@ -56,7 +56,7 @@ func (p *SecretsManagerProvider) Decode(val string) (string, error) {
 	name := val[len(prefix):]
 	property := postfix.FindString(name)
 	if property != "" {
-		return p.decodeJson(name, strings.Trim(property, "{}"))
+		return p.decodeJson(name, strings.Trim(property, "[]"))
 	}
 	return p.fetchString(name)
 }
