@@ -1,4 +1,4 @@
-module github.com/s12v/exec-with-secrets
+module github.com/johnrichardrinehart/exec-with-secrets
 
 require (
 	github.com/Azure/azure-sdk-for-go v30.1.0+incompatible

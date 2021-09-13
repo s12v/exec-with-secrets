@@ -9,7 +9,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/services/keyvault/auth"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/s12v/exec-with-secrets/provider"
+	"github.com/johnrichardrinehart/exec-with-secrets/provider"
 	"os"
 	"strings"
 )

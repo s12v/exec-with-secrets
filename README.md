@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/s12v/exec-with-secrets.svg?branch=master)](https://travis-ci.com/s12v/exec-with-secrets)
-[![codecov](https://codecov.io/gh/s12v/exec-with-secrets/branch/master/graph/badge.svg)](https://codecov.io/gh/s12v/exec-with-secrets)
+[![Build Status](https://travis-ci.com/johnrichardrinehart/exec-with-secrets.svg?branch=master)](https://travis-ci.com/johnrichardrinehart/exec-with-secrets)
+[![codecov](https://codecov.io/gh/johnrichardrinehart/exec-with-secrets/branch/master/graph/badge.svg)](https://codecov.io/gh/johnrichardrinehart/exec-with-secrets)
 
 # Inject secrets from AWS KMS/SSM/Secrets Manager and Azure Key Vault into your app environment
 
@@ -69,4 +69,4 @@ make TAGS=awsssm
 
 ## Adding a new provider
 
-See example PR: https://github.com/s12v/exec-with-secrets/pull/1
+See example PR: https://github.com/johnrichardrinehart/exec-with-secrets/pull/1

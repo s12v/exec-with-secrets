@@ -13,7 +13,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/s12v/exec-with-secrets/provider"
+	"github.com/johnrichardrinehart/exec-with-secrets/provider"
 )
 
 type KmsProvider struct {
