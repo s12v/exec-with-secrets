@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"syscall"
+
 	"github.com/s12v/exec-with-secrets/provider"
 	_ "github.com/s12v/exec-with-secrets/provider/awskms"
 	_ "github.com/s12v/exec-with-secrets/provider/awssecretsmanager"
 	_ "github.com/s12v/exec-with-secrets/provider/awsssm"
 	_ "github.com/s12v/exec-with-secrets/provider/azurekeyvault"
-	"os"
-	"os/exec"
-	"syscall"
 )
 
 func main() {

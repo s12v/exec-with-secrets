@@ -6,10 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/s12v/exec-with-secrets/provider"
-	"strings"
 )
 
 type SsmProvider struct {
@@ -21,21 +24,34 @@ const prefix = "{aws-ssm}"
 var fetch func(awsSsmClient *ssm.Client, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error)
 
 func init() {
-	cfg, err := external.LoadDefaultAWSConfig()
+	fetch = awsFetch
+
+	cfg, err := config.LoadDefaultConfig(
+		context.TODO(),
+		config.WithSharedConfigProfile("default"),
+	)
 	if err != nil {
-		panic("unable to load AWS-SDK config, " + err.Error())
+		fmt.Println("error obtaining AWS credentials:", err)
+		os.Exit(1)
 	}
 
-	fetch = awsFetch
-	provider.Register(&SsmProvider{ssm.New(cfg)})
+	opts := ssm.Options{
+		Credentials: cfg.Credentials,
+	}
+
+	ssmClient := ssm.New(opts)
+
+	provider.Register(&SsmProvider{ssmClient})
 }
 
 func awsFetch(awsSsmClient *ssm.Client, input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error) {
-	ctx := context.Background()
-	if resp, err := awsSsmClient.GetParameterRequest(input).Send(ctx); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	resp, err := awsSsmClient.GetParameter(ctx, input)
+	if err != nil {
 		return nil, errors.New(fmt.Sprintf("SSM error: %v", err))
 	} else {
-		return resp.GetParameterOutput, nil
+		return resp, nil
 	}
 }
 
@@ -45,14 +61,10 @@ func (p *SsmProvider) Match(val string) bool {
 
 func (p *SsmProvider) Decode(val string) (string, error) {
 	name := val[len(prefix):]
-	var withEncryption = true
-	input := &ssm.GetParameterInput{Name: &name, WithDecryption: &withEncryption}
-	if err := input.Validate(); err != nil {
-		return "", err
-	}
+	input := &ssm.GetParameterInput{Name: &name, WithDecryption: true}
 
 	if output, err := fetch(p.awsSsmClient, input); err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to fetch secret %s: %s", name, err)
 	} else {
 		return *output.Parameter.Value, nil
 	}
