@@ -5,14 +5,16 @@ package awssecretsmanager
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/aws/external"
-	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
-	"github.com/s12v/exec-with-secrets/provider"
+	"os"
 	"regexp"
 	"strings"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+	"github.com/johnrichardrinehart/exec-with-secrets/provider"
 )
 
 type SecretsManagerProvider struct {
@@ -28,24 +30,36 @@ var fetch func(
 	input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error)
 
 func init() {
-	cfg, err := external.LoadDefaultAWSConfig()
+	fetch = awsFetch // set global
+
+	cfg, err := config.LoadDefaultConfig(
+		context.TODO(),
+		config.WithSharedConfigProfile("default"),
+	)
 	if err != nil {
-		panic("unable to load AWS-SDK config, " + err.Error())
+		fmt.Println("error obtaining AWS credentials:", err)
+		os.Exit(1)
 	}
 
-	fetch = awsFetch
-	provider.Register(&SecretsManagerProvider{secretsmanager.New(cfg)})
+	opts := secretsmanager.Options{
+		Region:      "us-east-1",
+		Credentials: cfg.Credentials,
+	}
+	smClient := secretsmanager.New(opts)
+
+	provider.Register(&SecretsManagerProvider{smClient}) // register externally
 }
 
 func awsFetch(
 	awsClient *secretsmanager.Client,
 	input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
-	ctx := context.Background()
-	if resp, err := awsClient.GetSecretValueRequest(input).Send(ctx); err != nil {
-		return nil, errors.New(fmt.Sprintf("AWS SecretsManager error: %v", err))
-	} else {
-		return resp.GetSecretValueOutput, nil
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	resp, err := awsClient.GetSecretValue(ctx, input)
+	if err != nil {
+		return nil, fmt.Errorf("AWS SecretsManager error: %v", err)
 	}
+	return resp, nil
 }
 
 func (p *SecretsManagerProvider) Match(val string) bool {
@@ -71,7 +85,7 @@ func (p *SecretsManagerProvider) decodeJson(val string, property string) (string
 	properties, _ := unmarshal(jsobj)
 	value, ok := properties[property]
 	if !ok {
-		return "", errors.New(fmt.Sprintf("property '%v' does not exist", property))
+		return "", fmt.Errorf("property '%v' does not exist", property)
 	}
 	return value, nil
 }
@@ -80,12 +94,9 @@ func (p *SecretsManagerProvider) fetchString(name string) (string, error) {
 	input := &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(name),
 	}
-	if err := input.Validate(); err != nil {
-		return "", err
-	}
 
 	if output, err := fetch(p.awsClient, input); err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to fetch secret %s: %s", name, err)
 	} else {
 		return *output.SecretString, nil
 	}
