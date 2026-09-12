@@ -16,9 +16,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: stable
-      - run: make build
+      - run: make
       - name: Create checksums
-        run: cd bin && for f in exec-with-secrets-*; do sha256sum -b "$f" | cut -d ' ' -f1 > "$f.sha256"; done
+        run: cd bin && for f in exec-with-secrets-*; do sha256sum -b "$f" > "$f.sha256"; done
       - uses: softprops/action-gh-release@v2
         with:
           files: bin/exec-with-secrets-*
