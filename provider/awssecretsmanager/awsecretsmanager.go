@@ -91,11 +91,14 @@ func (p *SecretsManagerProvider) fetchString(name string) (string, error) {
 		SecretId: aws.String(name),
 	}
 
-	if output, err := fetch(p.awsClient, input); err != nil {
+	output, err := fetch(p.awsClient, input)
+	if err != nil {
 		return "", err
-	} else {
-		return *output.SecretString, nil
 	}
+	if output.SecretString == nil {
+		return "", fmt.Errorf("secret '%v' has no string value (binary secrets are not supported)", name)
+	}
+	return *output.SecretString, nil
 }
 
 func unmarshal(val string) (map[string]string, error) {

@@ -108,6 +108,25 @@ func TestSecretsManagerProvider_DecodeJson_FetchError(t *testing.T) {
 	}
 }
 
+func TestSecretsManagerProvider_Decode_BinarySecret(t *testing.T) {
+	provider := SecretsManagerProvider{}
+
+	fetch = func(
+		awsClient *secretsmanager.Client,
+		input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
+
+		return &secretsmanager.GetSecretValueOutput{SecretBinary: []byte("boom")}, nil
+	}
+
+	r, err := provider.Decode("{aws-sm}/foo/bar")
+	if err == nil {
+		t.Fatal("expected an error", r)
+	}
+	if r != "" {
+		t.Fatalf("unexpected result: '%v'", r)
+	}
+}
+
 func TestSecretsManagerProvider_Decode_InvalidInput(t *testing.T) {
 	provider := SecretsManagerProvider{}
 	r, err := provider.Decode("{aws-sm}")
