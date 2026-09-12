@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - run: make build
+      - name: Create checksums
+        run: cd bin && for f in exec-with-secrets-*; do sha256sum -b "$f" | cut -d ' ' -f1 > "$f.sha256"; done
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: bin/exec-with-secrets-*
+          generate_release_notes: true

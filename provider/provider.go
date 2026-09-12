@@ -20,6 +20,10 @@ func Populate(env []string) []string {
 	newEnv := make([]string, 0)
 	for _, e := range env {
 		pair := strings.SplitN(e, "=", 2)
+		if len(pair) < 2 {
+			newEnv = append(newEnv, e)
+			continue
+		}
 		for _, p := range registry {
 			if p.Match(pair[1]) {
 				if decoded, err := p.Decode(pair[1]); err == nil {
@@ -31,7 +35,7 @@ func Populate(env []string) []string {
 			}
 		}
 
-		newEnv = append(newEnv, pair[0] + "=" + pair[1])
+		newEnv = append(newEnv, pair[0]+"="+pair[1])
 	}
 
 	return newEnv

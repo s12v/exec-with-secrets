@@ -1,10 +1,13 @@
+//go:build awsssm
 // +build awsssm
 
 package awsssm
 
 import (
-	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"testing"
+
+	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/aws/aws-sdk-go-v2/service/ssm/types"
 )
 
 func TestSsmProvider_Match(t *testing.T) {
@@ -28,7 +31,7 @@ func TestSsmProvider_Decode(t *testing.T) {
 			t.Fatalf("unexpected name %v", input.Name)
 		}
 
-		return &ssm.GetParameterOutput{Parameter: &ssm.Parameter{Value: &value}}, nil
+		return &ssm.GetParameterOutput{Parameter: &types.Parameter{Value: &value}}, nil
 	}
 
 	if r, _ := ssmProvider.Decode("{aws-ssm}/foo/bar"); r != "boom" {

@@ -35,6 +35,7 @@ func TestPopulate(t *testing.T) {
 	env := []string{
 		"PLAINTEXT=this is a test",
 		"SECRET={dummy}ddd",
+		"MALFORMED",
 	}
 
 	registry = []Provider{&DummyProvider{"bar", false}}
@@ -46,6 +47,10 @@ func TestPopulate(t *testing.T) {
 
 	if env[1] != "SECRET=bar" {
 		t.Fatalf("unexpected env[1]: %v", env[1])
+	}
+
+	if env[2] != "MALFORMED" {
+		t.Fatalf("unexpected env[2]: %v", env[2])
 	}
 }
 
