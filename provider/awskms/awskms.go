@@ -1,3 +1,4 @@
+//go:build awskms
 // +build awskms
 
 package awskms
@@ -7,10 +8,11 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"strings"
+
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/s12v/exec-with-secrets/provider"
-	"strings"
 )
 
 type KmsProvider struct {
@@ -22,21 +24,21 @@ const prefix = "{aws-kms}"
 var decrypt func(awsKmsClient *kms.Client, input *kms.DecryptInput) (*kms.DecryptOutput, error)
 
 func init() {
-	cfg, err := external.LoadDefaultAWSConfig()
+	cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {
-		panic("unable to load AWS-SDK config, " + err.Error())
+		panic("unable to load AWS SDK config, " + err.Error())
 	}
 
 	decrypt = awsDecrypt
-	provider.Register(&KmsProvider{kms.New(cfg)})
+	provider.Register(&KmsProvider{kms.NewFromConfig(cfg)})
 }
 
 func awsDecrypt(awsKmsClient *kms.Client, input *kms.DecryptInput) (*kms.DecryptOutput, error) {
 	ctx := context.Background()
-	if resp, err := awsKmsClient.DecryptRequest(input).Send(ctx); err != nil {
-		return nil, errors.New(fmt.Sprintf("KMS error: %v", err))
+	if resp, err := awsKmsClient.Decrypt(ctx, input); err != nil {
+		return nil, fmt.Errorf("KMS error: %w", err)
 	} else {
-		return resp.DecryptOutput, nil
+		return resp, nil
 	}
 }
 
@@ -50,11 +52,11 @@ func (p *KmsProvider) Decode(val string) (string, error) {
 		return "", err
 	}
 
-	input := &kms.DecryptInput{CiphertextBlob: blob}
-	if err = input.Validate(); err != nil {
-		return "", err
+	if len(blob) == 0 {
+		return "", errors.New("empty ciphertext")
 	}
 
+	input := &kms.DecryptInput{CiphertextBlob: blob}
 	if output, err := decrypt(p.awsKmsClient, input); err != nil {
 		return "", err
 	} else {

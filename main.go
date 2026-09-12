@@ -2,34 +2,35 @@ package main
 
 import (
 	"fmt"
-	"github.com/s12v/exec-with-secrets/provider"
-	_ "github.com/s12v/exec-with-secrets/provider/awskms"
-	_ "github.com/s12v/exec-with-secrets/provider/awssecretsmanager"
-	_ "github.com/s12v/exec-with-secrets/provider/awsssm"
-	_ "github.com/s12v/exec-with-secrets/provider/azurekeyvault"
 	"os"
 	"os/exec"
 	"syscall"
+
+	_ "github.com/s12v/exec-with-secrets/provider/awskms"
+	_ "github.com/s12v/exec-with-secrets/provider/awssecretsmanager"
+	_ "github.com/s12v/exec-with-secrets/provider/awsssm"
+
+	"github.com/s12v/exec-with-secrets/provider"
 )
 
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println("exec-with-secrets:", r)
+			fmt.Fprintln(os.Stderr, "exec-with-secrets:", r)
 			os.Exit(1)
 		}
 	}()
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: exec-with-secrets program [args]")
-		os.Exit(0)
+		fmt.Fprintln(os.Stderr, "Usage: exec-with-secrets program [args]")
+		os.Exit(2)
 	}
 
 	path := lookPath(os.Args[1])
 	env := provider.Populate(os.Environ())
-	_ = syscall.Exec(path, os.Args[1:], env)
-
-	panic("Unable to start " + path)
+	if err := syscall.Exec(path, os.Args[1:], env); err != nil {
+		panic("Unable to start " + path + ": " + err.Error())
+	}
 }
 
 func lookPath(name string) string {

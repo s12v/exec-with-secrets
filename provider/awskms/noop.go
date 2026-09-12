@@ -1,3 +1,4 @@
+//go:build !awskms
 // +build !awskms
 
 package awskms

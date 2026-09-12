@@ -1,3 +1,4 @@
+//go:build awssecretsmanager
 // +build awssecretsmanager
 
 package awssecretsmanager
@@ -7,12 +8,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/aws/external"
-	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
-	"github.com/s12v/exec-with-secrets/provider"
 	"regexp"
 	"strings"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+	"github.com/s12v/exec-with-secrets/provider"
 )
 
 type SecretsManagerProvider struct {
@@ -28,23 +30,23 @@ var fetch func(
 	input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error)
 
 func init() {
-	cfg, err := external.LoadDefaultAWSConfig()
+	cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {
-		panic("unable to load AWS-SDK config, " + err.Error())
+		panic("unable to load AWS SDK config, " + err.Error())
 	}
 
 	fetch = awsFetch
-	provider.Register(&SecretsManagerProvider{secretsmanager.New(cfg)})
+	provider.Register(&SecretsManagerProvider{secretsmanager.NewFromConfig(cfg)})
 }
 
 func awsFetch(
 	awsClient *secretsmanager.Client,
 	input *secretsmanager.GetSecretValueInput) (*secretsmanager.GetSecretValueOutput, error) {
 	ctx := context.Background()
-	if resp, err := awsClient.GetSecretValueRequest(input).Send(ctx); err != nil {
-		return nil, errors.New(fmt.Sprintf("AWS SecretsManager error: %v", err))
+	if resp, err := awsClient.GetSecretValue(ctx, input); err != nil {
+		return nil, fmt.Errorf("AWS SecretsManager error: %w", err)
 	} else {
-		return resp.GetSecretValueOutput, nil
+		return resp, nil
 	}
 }
 
@@ -68,20 +70,25 @@ func (p *SecretsManagerProvider) decodeJson(val string, property string) (string
 		return "", err
 	}
 
-	properties, _ := unmarshal(jsobj)
+	properties, err := unmarshal(jsobj)
+	if err != nil {
+		return "", fmt.Errorf("secret '%v' is not a flat JSON object: %w", name, err)
+	}
+
 	value, ok := properties[property]
 	if !ok {
-		return "", errors.New(fmt.Sprintf("property '%v' does not exist", property))
+		return "", fmt.Errorf("property '%v' does not exist", property)
 	}
 	return value, nil
 }
 
 func (p *SecretsManagerProvider) fetchString(name string) (string, error) {
+	if name == "" {
+		return "", errors.New("missing secret id")
+	}
+
 	input := &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(name),
-	}
-	if err := input.Validate(); err != nil {
-		return "", err
 	}
 
 	if output, err := fetch(p.awsClient, input); err != nil {

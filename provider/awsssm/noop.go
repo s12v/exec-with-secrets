@@ -1,3 +1,4 @@
+//go:build !awsssm
 // +build !awsssm
 
 package awsssm
